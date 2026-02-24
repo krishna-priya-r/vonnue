@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Finder | Your Academic Future</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <!-- Landing Section -->
+        <section id="landing" class="screen active">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1>Find Your Perfect <span>Course</span></h1>
+                    <p>Make data-driven decisions for your academic future based on fees, rankings, and employability.
+                    </p>
+                    <div class="hero-buttons">
+                        <button id="start-btn" class="primary-btn">Start the Wizard</button>
+                        <button id="explore-btn" class="secondary-btn">Explore Colleges</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Wizard Section -->
+        <section id="wizard" class="screen">
+            <div style="max-width: 500px; margin: 0 auto 1rem; display: flex; justify-content: flex-end;">
+                <button class="back-home-btn secondary-btn">Back to Home</button>
+            </div>
+            <div class="wizard-container glass-panel">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+
+                <!-- Step 1: Constraints -->
+                <div class="wizard-step active" id="step-1">
+                    <h2>Hard Constraints</h2>
+                    <p>Let's filter out what won't work for you.</p>
+
+                    <div class="form-group">
+                        <label for="max-budget">Maximum Budget (INR) - Total Tuition + Living</label>
+                        <input type="number" id="max-budget" placeholder="e.g. 1500000">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="min-gpa">Higher Secondary Percentage (%)</label>
+                        <input type="number" id="min-gpa" step="0.1" max="100" placeholder="e.g. 85">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="study-format">Preferred Format</label>
+                        <select id="study-format">
+                            <option value="Any">Any Format</option>
+                            <option value="On-Campus">On-Campus Only</option>
+                            <option value="Online">Online Only</option>
+                            <option value="Hybrid">Hybrid</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hs-stream">Your Higher Secondary Stream</label>
+                        <select id="hs-stream">
+                            <option value="Science">Science (PCM/PCB)</option>
+                            <option value="Commerce">Commerce</option>
+                            <option value="Arts">Arts / Humanities</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pref-category">Preferred Course Category</label>
+                        <select id="pref-category">
+                            <option value="Any">Any Category</option>
+                            <option value="Engineering">Engineering & Technology</option>
+                            <option value="Medical">Medical & Sciences</option>
+                            <option value="Business">Business & Management</option>
+                            <option value="Arts">Arts & Design</option>
+                            <option value="Science">Pure Sciences (B.Sc)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label for="pref-location">Preferred Location</label>
+                            <select id="pref-location">
+                                <option value="Any">Anywhere in India</option>
+                                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                <option value="Assam">Assam</option>
+                                <option value="Bihar">Bihar</option>
+                                <option value="Chhattisgarh">Chhattisgarh</option>
+                                <option value="Goa">Goa</option>
+                                <option value="Gujarat">Gujarat</option>
+                                <option value="Haryana">Haryana</option>
+                                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                <option value="Jharkhand">Jharkhand</option>
+                                <option value="Karnataka">Karnataka</option>
+                                <option value="Kerala">Kerala</option>
+                                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                <option value="Maharashtra">Maharashtra</option>
+                                <option value="Manipur">Manipur</option>
+                                <option value="Meghalaya">Meghalaya</option>
+                                <option value="Mizoram">Mizoram</option>
+                                <option value="Nagaland">Nagaland</option>
+                                <option value="Odisha">Odisha</option>
+                                <option value="Punjab">Punjab</option>
+                                <option value="Rajasthan">Rajasthan</option>
+                                <option value="Sikkim">Sikkim</option>
+                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                <option value="Telangana">Telangana</option>
+                                <option value="Tripura">Tripura</option>
+                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                <option value="Uttarakhand">Uttarakhand</option>
+                                <option value="West Bengal">West Bengal</option>
+                                <option value="Online">Online / Remote</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="pref-duration">Course Duration</label>
+                            <select id="pref-duration">
+                                <option value="Any">Any Duration</option>
+                                <option value="Short">Short-term (≤ 2 Years)</option>
+                                <option value="Long">Long-term (> 2 Years)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="next-btn primary-btn" data-next="2">Next Step</button>
+                </div>
+
+                <!-- Step 2: Preferences -->
+                <div class="wizard-step" id="step-2">
+                    <h2>What matters most to you?</h2>
+                    <p>Rate the importance of these factors from 1 (Low) to 5 (High).</p>
+
+                    <div class="preference-group">
+                        <label>University Ranking & Prestige</label>
+                        <input type="range" id="pref-ranking" min="1" max="5" value="3">
+                        <span class="range-val" id="val-ranking">3</span>
+                    </div>
+
+                    <div class="preference-group">
+                        <label>Employability & Starting Salary</label>
+                        <input type="range" id="pref-outcomes" min="1" max="5" value="4">
+                        <span class="range-val" id="val-outcomes">4</span>
+                    </div>
+
+                    <div class="preference-group">
+                        <label>Low Cost (Tuition & Living)</label>
+                        <input type="range" id="pref-cost" min="1" max="5" value="3">
+                        <span class="range-val" id="val-cost">3</span>
+                    </div>
+
+                    <div class="button-group">
+                        <button class="prev-btn secondary-btn" data-prev="1">Back</button>
+                        <button id="find-courses-btn" class="primary-btn">Find Matches</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section id="results" class="screen">
+            <div class="results-header">
+                <h2>Your Top Matches</h2>
+                <div style="display: flex; gap: 1rem;">
+                    <button id="restart-btn" class="secondary-btn">Edit Preferences</button>
+                    <button class="back-home-btn secondary-btn">Back to Home</button>
+                </div>
+            </div>
+            <div id="courses-grid" class="courses-grid">
+                <!-- Course cards injected here -->
+            </div>
+        </section>
+
+        <!-- Explore Section -->
+        <section id="explore" class="screen">
+            <div class="results-header">
+                <div>
+                    <h2>Explore All Colleges</h2>
+                    <p style="color: var(--text-secondary); margin-top: 0.5rem; font-size: 0.95rem;">Ranked by NIRF &
+                        Employability outcomes.</p>
+                </div>
+                <button class="back-home-btn secondary-btn">Back to Home</button>
+            </div>
+
+            <div class="filter-bar glass-panel"
+                style="margin-bottom: 2rem; max-width: 1200px; padding: 1.5rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 1rem; flex: 1; min-width: 250px;">
+                    <label for="explore-location" style="font-weight: bold; white-space: nowrap;">State:</label>
+                    <select id="explore-location"
+                        style="flex: 1; padding: 0.8rem; border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.3); background: rgba(15, 23, 42, 0.6); color: var(--text-primary); outline: none;">
+                        <option value="Any">All India</option>
+                        <option value="Andhra Pradesh">Andhra Pradesh</option>
+                        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                        <option value="Assam">Assam</option>
+                        <option value="Bihar">Bihar</option>
+                        <option value="Chhattisgarh">Chhattisgarh</option>
+                        <option value="Goa">Goa</option>
+                        <option value="Gujarat">Gujarat</option>
+                        <option value="Haryana">Haryana</option>
+                        <option value="Himachal Pradesh">Himachal Pradesh</option>
+                        <option value="Jharkhand">Jharkhand</option>
+                        <option value="Karnataka">Karnataka</option>
+                        <option value="Kerala">Kerala</option>
+                        <option value="Madhya Pradesh">Madhya Pradesh</option>
+                        <option value="Maharashtra">Maharashtra</option>
+                        <option value="Manipur">Manipur</option>
+                        <option value="Meghalaya">Meghalaya</option>
+                        <option value="Mizoram">Mizoram</option>
+                        <option value="Nagaland">Nagaland</option>
+                        <option value="Odisha">Odisha</option>
+                        <option value="Punjab">Punjab</option>
+                        <option value="Rajasthan">Rajasthan</option>
+                        <option value="Sikkim">Sikkim</option>
+                        <option value="Tamil Nadu">Tamil Nadu</option>
+                        <option value="Telangana">Telangana</option>
+                        <option value="Tripura">Tripura</option>
+                        <option value="Uttar Pradesh">Uttar Pradesh</option>
+                        <option value="Uttarakhand">Uttarakhand</option>
+                        <option value="West Bengal">West Bengal</option>
+                        <option value="Online">Online / Remote</option>
+                    </select>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem; flex: 1; min-width: 250px;">
+                    <label for="explore-category" style="font-weight: bold; white-space: nowrap;">Course:</label>
+                    <select id="explore-category"
+                        style="flex: 1; padding: 0.8rem; border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.3); background: rgba(15, 23, 42, 0.6); color: var(--text-primary); outline: none;">
+                        <option value="Any">All Courses</option>
+                        <option value="Engineering">Engineering & Technology</option>
+                        <option value="Medical">Medical & Sciences</option>
+                        <option value="Business">Business & Management</option>
+                        <option value="Arts">Arts & Design</option>
+                        <option value="Science">Pure Sciences (B.Sc)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="explore-grid" class="courses-grid">
+                <!-- All Course cards injected here -->
+            </div>
+        </section>
+    </div>
+
+    <script src="courses.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
