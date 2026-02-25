@@ -52,7 +52,4 @@ The application follows a standard, lightweight **HTML/CSS/Vanilla JS** architec
 
 ## What you would improve with more time
 
-- **Backend/Database Integration:** Migrate the static `courses.js` data to a proper backend API (e.g., Node.js + MongoDB or PostgreSQL). This would allow scaling the dataset to hundreds of thousands of courses globally without performance penalties.
-- **Advanced Normalization:** Improve the MCDA model by using dynamic statistical bounds (like Z-scores or distribution curving) instead of hardcoded maximums (like capping max rank at 400).
-- **Data Visualizations:** Add charts or spider/radar graphs in the results screen to help users visually compare the trade-offs of their top 3 recommended courses.
-- **Save/Share Functionality:** Allow users to save their results or share their specific configuration and recommendations via a unique parameterized URL.
+(To be updated as the project evolves)
