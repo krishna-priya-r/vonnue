@@ -1,16 +1,6 @@
-# Vonnue - Academic Course Decision Companion
+ Academic Course Decision Companion
 
-## Basic Logic of the Project
 
-The core logic of this application is a **Client-Side Filtering and Scoring Engine**. Here is the step-by-step flow:
-
-1. **User Input Gathering:** The user navigates through a UI wizard to input both **Hard Constraints** (maximum budget, minimum GPA, valid high school stream, preferred location/duration/category) and **Subjective Preferences** (how much they prioritize cost vs. ranking vs. outcomes).
-2. **Hard Constraint Filtering:** The system iterates over the entire `coursesData` dataset. It acts as an absolute gatekeeper; any course that exceeds the user's budget, falls below their GPA, or doesn't match their format/stream requirements is instantly discarded.
-3. **Multi-Criteria Decision Analysis (MCDA):** For the courses that survive the filter, a `matchPercentage` is calculated using a Weighted Sum Model:
-   - **Normalization:** Raw metrics (like Nirf Ranking from 1-400, or Costs up to 50L) are mapped onto a standard 0-100 scale.
-   - **Weighting:** These 0-100 scores are multiplied by the user's specific weights (e.g., if a user heavily weights 'Cost', a cheaper college gets a massive score boost).
-4. **Explainability Generation:** As each course is scored, the system generates specific, readable strings explaining *why* it matched (e.g., `Fits budget (₹15,00,000)`, `Matches preferred category: Engineering`).
-5. **Sorting and Display:** The remaining courses are sorted highest-to-lowest by their `matchPercentage` and rendered dynamically into the Results UI.
 
 ## Your understanding of the problem
 
