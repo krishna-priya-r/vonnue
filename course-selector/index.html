@@ -11,6 +11,15 @@
 
 <body>
     <div id="app">
+        <nav class="navbar" style="display: none;">
+            <div class="nav-logo">Course Finder</div>
+            <div class="nav-links">
+                <a href="#" class="nav-link" data-target="landing">Home</a>
+                <a href="#" class="nav-link" data-target="explore">Explore</a>
+                <a href="#" class="nav-link" data-target="wizard">Edit Preferences</a>
+            </div>
+        </nav>
+
         <!-- Landing Section -->
         <section id="landing" class="screen active">
             <div class="hero">
@@ -19,18 +28,81 @@
                     <p>Make data-driven decisions for your academic future based on fees, rankings, and employability.
                     </p>
                     <div class="hero-buttons">
-                        <button id="start-btn" class="primary-btn">Start the Wizard</button>
+                        <button id="start-btn" class="primary-btn">Login</button>
                         <button id="explore-btn" class="secondary-btn">Explore Colleges</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Wizard Section -->
-        <section id="wizard" class="screen">
-            <div style="max-width: 500px; margin: 0 auto 1rem; display: flex; justify-content: flex-end;">
-                <button class="back-home-btn secondary-btn">Back to Home</button>
+        <!-- Auth Section -->
+        <section id="auth" class="screen" style="padding-top: 100px;">
+            <div class="wizard-container glass-panel">
+                <div class="auth-tabs"
+                    style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">
+                    <button id="tab-login" class="auth-tab active"
+                        style="flex: 1; background: transparent; border: none; color: var(--text-primary); font-size: 1.2rem; cursor: pointer; border-bottom: 2px solid var(--primary-color);">Login</button>
+                    <button id="tab-register" class="auth-tab"
+                        style="flex: 1; background: transparent; border: none; color: var(--text-secondary); font-size: 1.2rem; cursor: pointer;">Register</button>
+                </div>
+
+                <!-- Login Form -->
+                <div id="form-login" class="auth-form active">
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <h2>Welcome Back</h2>
+                        <p style="color: var(--text-secondary); margin-top: 0.5rem;">Log in to view your saved
+                            preferences.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="login-email">Email Address</label>
+                        <input type="email" id="login-email" placeholder="john@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" placeholder="********">
+                    </div>
+
+                    <button id="login-btn" class="primary-btn" style="width: 100%; margin-top: 1rem;">Login &
+                        Continue</button>
+                    <p style="text-align: center; margin-top: 1rem; color: var(--text-secondary);">
+                        Don't have an account? <a href="#" id="link-create-account"
+                            style="color: var(--primary-color); text-decoration: none;">Create one</a>
+                    </p>
+                </div>
+
+                <!-- Register Form -->
+                <div id="form-register" class="auth-form" style="display: none;">
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <h2>Create an Account</h2>
+                        <p style="color: var(--text-secondary); margin-top: 0.5rem;">Register to get personalized course
+                            recommendations.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reg-name">Full Name</label>
+                        <input type="text" id="reg-name" placeholder="John Doe">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reg-email">Email Address</label>
+                        <input type="email" id="reg-email" placeholder="john@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reg-password">Password</label>
+                        <input type="password" id="reg-password" placeholder="********">
+                    </div>
+
+                    <button id="register-btn" class="primary-btn" style="width: 100%; margin-top: 1rem;">Register &
+                        Continue</button>
+                </div>
             </div>
+        </section>
+
+        <!-- Wizard Section -->
+        <section id="wizard" class="screen" style="padding-top: 100px;">
             <div class="wizard-container glass-panel">
                 <div class="progress-bar">
                     <div class="progress-fill" id="progress-fill"></div>
@@ -71,13 +143,13 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="pref-category">Preferred Course Category</label>
+                        <label for="pref-category">Area of Interest</label>
                         <select id="pref-category">
-                            <option value="Any">Any Category</option>
-                            <option value="Engineering">Engineering & Technology</option>
-                            <option value="Medical">Medical & Sciences</option>
-                            <option value="Business">Business & Management</option>
-                            <option value="Arts">Arts & Design</option>
+                            <option value="Any">Any Area</option>
+                            <option value="Engineering">Tech & Engineering</option>
+                            <option value="Medical">Medical & Health</option>
+                            <option value="Business">Business & Commerce</option>
+                            <option value="Arts">Arts & Humanities</option>
                             <option value="Science">Pure Sciences (B.Sc)</option>
                         </select>
                     </div>
@@ -163,13 +235,12 @@
         </section>
 
         <!-- Results Section -->
-        <section id="results" class="screen">
+        <section id="results" class="screen" style="padding-top: 100px;">
+            <div class="top-right-controls">
+                <button id="restart-btn" class="secondary-btn">Edit Preferences</button>
+            </div>
             <div class="results-header">
-                <h2>Your Top Matches</h2>
-                <div style="display: flex; gap: 1rem;">
-                    <button id="restart-btn" class="secondary-btn">Edit Preferences</button>
-                    <button class="back-home-btn secondary-btn">Back to Home</button>
-                </div>
+                <h2 id="user-greeting">Your Top Matches</h2>
             </div>
             <div id="courses-grid" class="courses-grid">
                 <!-- Course cards injected here -->
@@ -177,14 +248,13 @@
         </section>
 
         <!-- Explore Section -->
-        <section id="explore" class="screen">
+        <section id="explore" class="screen" style="padding-top: 100px;">
             <div class="results-header">
                 <div>
                     <h2>Explore All Colleges</h2>
                     <p style="color: var(--text-secondary); margin-top: 0.5rem; font-size: 0.95rem;">Ranked by NIRF &
                         Employability outcomes.</p>
                 </div>
-                <button class="back-home-btn secondary-btn">Back to Home</button>
             </div>
 
             <div class="filter-bar glass-panel"
@@ -226,14 +296,15 @@
                     </select>
                 </div>
                 <div style="display: flex; align-items: center; gap: 1rem; flex: 1; min-width: 250px;">
-                    <label for="explore-category" style="font-weight: bold; white-space: nowrap;">Course:</label>
+                    <label for="explore-category" style="font-weight: bold; white-space: nowrap;">Area of
+                        Interest:</label>
                     <select id="explore-category"
                         style="flex: 1; padding: 0.8rem; border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.3); background: rgba(15, 23, 42, 0.6); color: var(--text-primary); outline: none;">
-                        <option value="Any">All Courses</option>
-                        <option value="Engineering">Engineering & Technology</option>
-                        <option value="Medical">Medical & Sciences</option>
-                        <option value="Business">Business & Management</option>
-                        <option value="Arts">Arts & Design</option>
+                        <option value="Any">All Areas</option>
+                        <option value="Engineering">Tech & Engineering</option>
+                        <option value="Medical">Medical & Health</option>
+                        <option value="Business">Business & Commerce</option>
+                        <option value="Arts">Arts & Humanities</option>
                         <option value="Science">Pure Sciences (B.Sc)</option>
                     </select>
                 </div>

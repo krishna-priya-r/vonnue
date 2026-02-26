@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Details | Your Academic Future</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <nav class="navbar">
+            <div class="nav-logo">Course Finder</div>
+            <div class="nav-links">
+                <a href="index.html?section=landing" class="nav-link">Home</a>
+                <a href="index.html?section=explore" class="nav-link">Explore</a>
+                <a href="index.html?section=wizard" class="nav-link">Edit Preferences</a>
+            </div>
+        </nav>
+        <section class="screen active" style="padding: 2rem; padding-top: 100px;">
+            <div class="results-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <button onclick="window.history.back()" class="secondary-btn" style="padding: 0.5rem 1rem;">&larr;
+                    Back</button>
+                <h2 style="flex: 1; text-align: center;">Course Details</h2>
+                <div style="width: 80px;"></div>
+            </div>
+            <div id="details-container" class="glass-panel" style="max-width: 800px; margin: 0 auto; padding: 2rem;">
+                <!-- Details injected here -->
+            </div>
+        </section>
+    </div>
+    <script src="courses.js"></script>
+    <script src="details.js"></script>
+</body>
+
+</html>

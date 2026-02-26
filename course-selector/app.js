@@ -1,7 +1,7 @@
 // Global State
 let userPreferences = {
-    budget: null,
-    gpa: null,
+    budget: 99999999,
+    gpa: 0,
     format: 'Any',
     hsStream: 'Science',
     prefCategory: 'Any',
@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // DOM Elements
     screens = {
         landing: document.getElementById('landing'),
+        auth: document.getElementById('auth'),
         wizard: document.getElementById('wizard'),
         results: document.getElementById('results'),
         explore: document.getElementById('explore')
@@ -27,6 +28,117 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event Listeners for Navigation
     document.getElementById('start-btn').addEventListener('click', () => {
+        switchScreen('auth');
+    });
+
+    // Auth Tabs Logic
+    const tabLogin = document.getElementById('tab-login');
+    const tabRegister = document.getElementById('tab-register');
+    const formLogin = document.getElementById('form-login');
+    const formRegister = document.getElementById('form-register');
+
+    tabLogin.addEventListener('click', () => {
+        tabLogin.style.borderBottom = '2px solid var(--primary-color)';
+        tabLogin.style.color = 'var(--text-primary)';
+        tabRegister.style.borderBottom = 'none';
+        tabRegister.style.color = 'var(--text-secondary)';
+        formLogin.style.display = 'block';
+        formRegister.style.display = 'none';
+    });
+
+    tabRegister.addEventListener('click', () => {
+        tabRegister.style.borderBottom = '2px solid var(--primary-color)';
+        tabRegister.style.color = 'var(--text-primary)';
+        tabLogin.style.borderBottom = 'none';
+        tabLogin.style.color = 'var(--text-secondary)';
+        formRegister.style.display = 'block';
+        formLogin.style.display = 'none';
+    });
+
+    document.getElementById('link-create-account').addEventListener('click', (e) => {
+        e.preventDefault();
+        tabRegister.click();
+    });
+
+    document.getElementById('login-btn').addEventListener('click', () => {
+        const email = document.getElementById('login-email').value.trim();
+        const password = document.getElementById('login-password').value;
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+
+        if (!email || !password) {
+            alert('Please enter both email and password.');
+            return;
+        }
+
+        const user = users.find(u => u.email === email);
+
+        if (user) {
+            if (user.password === password) {
+                const name = user.name;
+                document.getElementById('user-greeting').textContent = `Top Matches`;
+
+                // Load saved preferences if available
+                if (user.preferences) {
+                    userPreferences = user.preferences;
+
+                    // Pre-fill form inputs with loaded preferences
+                    document.getElementById('max-budget').value = userPreferences.budget !== 99999999 ? userPreferences.budget : '';
+                    document.getElementById('min-gpa').value = userPreferences.gpa !== 0 ? userPreferences.gpa : '';
+                    document.getElementById('study-format').value = userPreferences.format;
+                    document.getElementById('hs-stream').value = userPreferences.hsStream;
+                    document.getElementById('pref-category').value = userPreferences.prefCategory;
+                    document.getElementById('pref-location').value = userPreferences.prefLocation;
+                    document.getElementById('pref-duration').value = userPreferences.prefDuration;
+
+                    document.getElementById('pref-ranking').value = userPreferences.weights.ranking;
+                    document.getElementById('pref-outcomes').value = userPreferences.weights.outcomes;
+                    document.getElementById('pref-cost').value = userPreferences.weights.cost;
+
+                    document.getElementById('val-ranking').textContent = userPreferences.weights.ranking;
+                    document.getElementById('val-outcomes').textContent = userPreferences.weights.outcomes;
+                    document.getElementById('val-cost').textContent = userPreferences.weights.cost;
+                }
+
+                const recommendedCourses = evaluateCourses();
+                renderCourses(recommendedCourses);
+                switchScreen('results');
+            } else {
+                alert('Incorrect password.');
+            }
+        } else {
+            alert('Invalid email. Please try again or register.');
+        }
+    });
+
+    document.getElementById('register-btn').addEventListener('click', () => {
+        const name = document.getElementById('reg-name').value.trim();
+        const email = document.getElementById('reg-email').value.trim();
+        const password = document.getElementById('reg-password').value;
+
+        if (!name || !email || !password) {
+            alert('Please fill in all fields to register.');
+            return;
+        }
+
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+
+        if (users.some(u => u.email === email)) {
+            alert('An account with this email already exists. Please login instead.');
+            return;
+        }
+
+        // Save with current default preferences
+        const newUser = {
+            name,
+            email,
+            password,
+            preferences: JSON.parse(JSON.stringify(userPreferences))
+        };
+        users.push(newUser);
+        localStorage.setItem('users', JSON.stringify(users));
+
+        document.getElementById('user-greeting').textContent = `Top Matches`;
+
         switchScreen('wizard');
     });
 
@@ -35,6 +147,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const locationFilter = document.getElementById('explore-location').value;
         const categoryFilter = document.getElementById('explore-category').value;
         renderExploreColleges(locationFilter, categoryFilter); // Initial render
+    });
+
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            const target = e.target.getAttribute('data-target');
+            if (target) {
+                e.preventDefault();
+                switchScreen(target);
+            }
+        });
     });
 
     document.querySelectorAll('.back-home-btn').forEach(btn => {
@@ -108,6 +230,18 @@ document.addEventListener('DOMContentLoaded', () => {
         userPreferences.weights.outcomes = parseInt(document.getElementById('pref-outcomes').value);
         userPreferences.weights.cost = parseInt(document.getElementById('pref-cost').value);
 
+        // Save updated preferences to the logged-in user if available (assuming email is known or matching the active session)
+        // For a more robust approach, we need the active user's email.
+        const currentEmail = document.getElementById('login-email').value.trim() || document.getElementById('reg-email').value.trim();
+        if (currentEmail) {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const userIndex = users.findIndex(u => u.email === currentEmail);
+            if (userIndex !== -1) {
+                users[userIndex].preferences = JSON.parse(JSON.stringify(userPreferences));
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+        }
+
         // 3. Calculate Results
         const recommendedCourses = evaluateCourses();
 
@@ -115,6 +249,16 @@ document.addEventListener('DOMContentLoaded', () => {
         renderCourses(recommendedCourses);
         switchScreen('results');
     });
+
+    // Handle initial routing from Details page
+    const urlParams = new URLSearchParams(window.location.search);
+    const section = urlParams.get('section');
+    if (section && screens[section]) {
+        switchScreen(section);
+        window.history.replaceState({}, document.title, window.location.pathname);
+    } else {
+        switchScreen('landing');
+    }
 });
 
 function switchScreen(screenId) {
@@ -123,6 +267,15 @@ function switchScreen(screenId) {
         screen.classList.remove('active');
     });
     screens[screenId].classList.add('active');
+
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+        if (screenId === 'landing') {
+            navbar.style.display = 'none';
+        } else {
+            navbar.style.display = 'flex';
+        }
+    }
 }
 
 
@@ -198,16 +351,25 @@ function renderCourses(courses) {
         return;
     }
 
-    courses.forEach(course => {
+    courses.forEach((course, index) => {
         const totalCost = course.tuition_fees + course.cost_of_living;
-        const color = course.matchPercentage >= 80 ? '#58a6ff' : (course.matchPercentage >= 60 ? '#f0883e' : '#8b949e');
+        // Color-coded match levels: Green -> Excellent, Yellow -> Moderate, Red -> Weak
+        const color = course.matchPercentage >= 80 ? '#22c55e' : (course.matchPercentage >= 60 ? '#eab308' : '#ef4444');
+        const isTopMatch = index < 3;
 
         const card = document.createElement('div');
-        card.className = 'course-card';
+        card.className = 'course-card' + (isTopMatch ? ' top-match' : '');
+        card.style.cursor = 'pointer';
+        card.onclick = () => window.location.href = `details.html?id=${course.id}`;
+
+        let badgeContent = `
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            ${course.matchPercentage}% Match ${isTopMatch ? ' 🏆 Top Pick' : ''}
+        `;
+
         card.innerHTML = `
             <div class="match-badge" style="color: ${color}; background: ${color}20;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                ${course.matchPercentage}% Match
+                ${badgeContent}
             </div>
             <h3>${course.name}</h3>
             <h4>${course.university} • ${course.country}</h4>
@@ -273,6 +435,8 @@ function renderExploreColleges(locationFilter = 'Any', categoryFilter = 'Any') {
 
         const card = document.createElement('div');
         card.className = 'course-card';
+        card.style.cursor = 'pointer';
+        card.onclick = () => window.location.href = `details.html?id=${course.id}`;
         card.innerHTML = `
             <h3>${course.name}</h3>
             <h4>${course.university} • ${course.country}</h4>
