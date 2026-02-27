@@ -351,50 +351,68 @@ function renderCourses(courses) {
         return;
     }
 
-    courses.forEach((course, index) => {
-        const totalCost = course.tuition_fees + course.cost_of_living;
-        // Color-coded match levels: Green -> Excellent, Yellow -> Moderate, Red -> Weak
-        const color = course.matchPercentage >= 80 ? '#22c55e' : (course.matchPercentage >= 60 ? '#eab308' : '#ef4444');
+    // Grouping by course name
+    const groupedCourses = {};
+    courses.forEach(course => {
+        if (!groupedCourses[course.name]) {
+            groupedCourses[course.name] = {
+                name: course.name,
+                bestMatchPercentage: course.matchPercentage,
+                duration: course.duration_months,
+                category: course.category,
+                colleges: []
+            };
+        }
+        groupedCourses[course.name].colleges.push(course);
+    });
+
+    sessionStorage.setItem('currentCourseMatches', JSON.stringify(groupedCourses));
+
+    Object.values(groupedCourses).forEach((courseGroup, index) => {
         const isTopMatch = index < 3;
+        const color = courseGroup.bestMatchPercentage >= 80 ? '#22c55e' : (courseGroup.bestMatchPercentage >= 60 ? '#eab308' : '#ef4444');
 
         const card = document.createElement('div');
         card.className = 'course-card' + (isTopMatch ? ' top-match' : '');
-        card.style.cursor = 'pointer';
-        card.onclick = () => window.location.href = `details.html?id=${course.id}`;
 
         let badgeContent = `
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-            ${course.matchPercentage}% Match ${isTopMatch ? ' 🏆 Top Pick' : ''}
+            Up to ${courseGroup.bestMatchPercentage}% Match ${isTopMatch ? ' 🏆 Top Pick' : ''}
         `;
+
+        const containerId = 'colleges-' + courseGroup.name.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
 
         card.innerHTML = `
             <div class="match-badge" style="color: ${color}; background: ${color}20;">
                 ${badgeContent}
             </div>
-            <h3>${course.name}</h3>
-            <h4>${course.university} • ${course.country}</h4>
+            <h3>${courseGroup.name}</h3>
+            <h4>Category: ${courseGroup.category}</h4>
             
             <div class="course-tags">
-                <span class="tag">⏱️ ${course.duration_months} Months</span>
-                <span class="tag">📍 ${course.location}</span>
-                <span class="tag">💰 ₹${totalCost.toLocaleString('en-IN')}</span>
+                <span class="tag">⏱️ ${courseGroup.duration} Months</span>
+                <span class="tag">🎓 ${courseGroup.colleges.length} Colleges Match</span>
             </div>
             
-            <div class="explanation">
-                <strong>Why this course?</strong>
-                <ul>
-                    <li>${course.explanation.costFit}</li>
-                    <li>${course.explanation.academicFit}</li>
-                    <li>${course.explanation.streamFit}</li>
-                    ${course.explanation.locationFit ? `<li>${course.explanation.locationFit}</li>` : ''}
-                    ${course.explanation.durationFit ? `<li>${course.explanation.durationFit}</li>` : ''}
-                    <li>${course.explanation.outcomeStrength}</li>
-                    <li>${course.explanation.rankingStrength}</li>
-                </ul>
+            <div style="margin-top: auto;">
+                <button class="primary-btn" style="width: 100%; padding: 10px; border-radius: 8px;" onclick="window.location.href='details.html?course=${encodeURIComponent(courseGroup.name)}'">Details</button>
             </div>
         `;
+
         grid.appendChild(card);
     });
+}
+
+// Global toggle function
+window.toggleColleges = function (containerId, btnElement) {
+    const container = document.getElementById(containerId);
+    if (container.style.display === 'none' || container.style.display === '') {
+        container.style.display = 'flex';
+        btnElement.textContent = 'Hide Colleges';
+    } else {
+        container.style.display = 'none';
+        btnElement.textContent = 'Show Colleges';
+    }
 }
 
 // Initialization logic is no longer needed since data is sync
