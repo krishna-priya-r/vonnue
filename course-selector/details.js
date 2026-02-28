@@ -77,7 +77,7 @@ function renderCourseDetails(courseGroup, container) {
         <div style="display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 3rem;">
             <!-- Course Details Card -->
             <div style="background: rgba(15, 23, 42, 0.4); padding: 2rem; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">
-                <h4 style="margin-bottom: 1.5rem; color: #facc15; font-size: 1.3rem; border-bottom: 1px solid rgba(234, 179, 8, 0.3); padding-bottom: 0.5rem;">Course Overview</h4>
+                <h4 style="margin-bottom: 1.5rem; color: #60a5fa; font-size: 1.3rem; border-bottom: 1px solid rgba(59, 130, 246, 0.3); padding-bottom: 0.5rem;">Course Overview</h4>
                 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
                     <div>
@@ -93,7 +93,7 @@ function renderCourseDetails(courseGroup, container) {
                 <div style="margin-top: 2rem;">
                     <h5 style="color: var(--text-primary); margin-bottom: 1rem; font-size: 1.1rem;">Subjects Involved</h5>
                     <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                        ${subjects.map(s => `<span class="tag" style="background: rgba(234, 179, 8, 0.1); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); padding: 0.4rem 0.8rem;">${s}</span>`).join('')}
+                        ${subjects.map(s => `<span class="tag" style="background: rgba(59, 130, 246, 0.1); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); padding: 0.4rem 0.8rem;">${s}</span>`).join('')}
                     </div>
                 </div>
             </div>
@@ -103,7 +103,7 @@ function renderCourseDetails(courseGroup, container) {
             <h3 style="color: var(--text-primary); font-size: 1.5rem;">Colleges Offering This Course</h3>
             <div>
                 <label for="location-filter" style="color: var(--text-secondary); margin-right: 0.5rem; font-size: 0.9rem;">Filter Location:</label>
-                <select id="location-filter" style="background: rgba(10, 10, 10, 0.8); color: var(--text-primary); border: 1px solid rgba(234, 179, 8, 0.3); padding: 0.5rem; border-radius: 8px; outline: none;">
+                <select id="location-filter" style="background: #1e293b; color: var(--text-primary); border: 1px solid rgba(59, 130, 246, 0.3); padding: 0.5rem; border-radius: 8px; outline: none;">
                     <option value="Any">All Locations</option>
                     ${hasOnline ? `<option value="Online">Online</option>` : ''}
                     ${keralaDistricts.map(dist => `<option value="${dist}">${dist}</option>`).join('')}
@@ -138,7 +138,7 @@ function renderCourseDetails(courseGroup, container) {
         let collegesHtml = '';
         filteredColleges.forEach(college => {
             const totalCost = college.tuition_fees + college.cost_of_living;
-            const matchLabel = college.matchPercentage ? `<span style="color: #eab308; font-weight: 600; font-size: 0.9rem;">${college.matchPercentage}% Match</span>` : '';
+            const matchLabel = college.matchPercentage ? `<span style="color: #3b82f6; font-weight: 600; font-size: 0.9rem;">${college.matchPercentage}% Match</span>` : '';
 
             collegesHtml += `
                 <div style="background: rgba(15, 23, 42, 0.4); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05); margin-bottom: 1rem; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'" onclick="window.location.href='details.html?id=${college.id}'">
@@ -238,14 +238,14 @@ function renderSingleCollege(course, container) {
                     </div>
                     <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255, 255, 255, 0.05); padding-bottom: 0.5rem;">
                         <span style="color: var(--text-secondary);">Alumni Rating:</span>
-                        <span style="font-weight: 600; color: #facc15;">⭐ ${course.alumni_rating} / 5.0</span>
+                        <span style="font-weight: 600; color: #60a5fa;">⭐ ${course.alumni_rating} / 5.0</span>
                     </div>
                 </div>
             </div>
             
             <!-- Financials -->
             <div style="grid-column: 1 / -1; background: rgba(15, 23, 42, 0.4); padding: 2rem; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">
-                <h4 style="margin-bottom: 1.5rem; color: #f0883e; font-size: 1.3rem; border-bottom: 1px solid rgba(240, 136, 62, 0.3); padding-bottom: 0.5rem;">Financials (Total Estimated)</h4>
+                <h4 style="margin-bottom: 1.5rem; color: #60a5fa; font-size: 1.3rem; border-bottom: 1px solid rgba(96, 165, 250, 0.3); padding-bottom: 0.5rem;">Financials (Total Estimated)</h4>
                 <div style="display: flex; justify-content: space-around; text-align: center; flex-wrap: wrap; gap: 2rem;">
                     <div style="background: rgba(0, 0, 0, 0.2); padding: 1.5rem; border-radius: 8px; flex: 1; min-width: 200px;">
                         <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">Tuition Fees</p>
@@ -255,9 +255,9 @@ function renderSingleCollege(course, container) {
                         <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">Cost of Living</p>
                         <p style="font-size: 1.8rem; font-weight: bold;">₹${course.cost_of_living.toLocaleString('en-IN')}</p>
                     </div>
-                    <div style="background: rgba(240, 136, 62, 0.1); border: 1px solid rgba(240, 136, 62, 0.2); padding: 1.5rem; border-radius: 8px; flex: 1; min-width: 200px;">
+                    <div style="background: rgba(96, 165, 250, 0.1); border: 1px solid rgba(96, 165, 250, 0.2); padding: 1.5rem; border-radius: 8px; flex: 1; min-width: 200px;">
                         <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">Total Cost</p>
-                        <p style="font-size: 2rem; font-weight: bold; color: #f0883e;">₹${totalCost.toLocaleString('en-IN')}</p>
+                        <p style="font-size: 2rem; font-weight: bold; color: #60a5fa;">₹${totalCost.toLocaleString('en-IN')}</p>
                     </div>
                 </div>
             </div>

@@ -20,7 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // DOM Elements
     screens = {
         landing: document.getElementById('landing'),
-        auth: document.getElementById('auth'),
+        login: document.getElementById('login'),
+        register: document.getElementById('register'),
         wizard: document.getElementById('wizard'),
         results: document.getElementById('results'),
         explore: document.getElementById('explore')
@@ -28,37 +29,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event Listeners for Navigation
     document.getElementById('start-btn').addEventListener('click', () => {
-        switchScreen('auth');
+        switchScreen('login');
     });
 
-    // Auth Tabs Logic
-    const tabLogin = document.getElementById('tab-login');
-    const tabRegister = document.getElementById('tab-register');
-    const formLogin = document.getElementById('form-login');
-    const formRegister = document.getElementById('form-register');
-
-    tabLogin.addEventListener('click', () => {
-        tabLogin.style.borderBottom = '2px solid var(--primary-color)';
-        tabLogin.style.color = 'var(--text-primary)';
-        tabRegister.style.borderBottom = 'none';
-        tabRegister.style.color = 'var(--text-secondary)';
-        formLogin.style.display = 'block';
-        formRegister.style.display = 'none';
+    document.getElementById('login-back-btn').addEventListener('click', () => {
+        switchScreen('landing');
     });
 
-    tabRegister.addEventListener('click', () => {
-        tabRegister.style.borderBottom = '2px solid var(--primary-color)';
-        tabRegister.style.color = 'var(--text-primary)';
-        tabLogin.style.borderBottom = 'none';
-        tabLogin.style.color = 'var(--text-secondary)';
-        formRegister.style.display = 'block';
-        formLogin.style.display = 'none';
+    document.getElementById('register-back-btn').addEventListener('click', () => {
+        switchScreen('landing');
     });
 
     document.getElementById('link-create-account').addEventListener('click', (e) => {
         e.preventDefault();
-        tabRegister.click();
+        switchScreen('register');
     });
+
+    document.getElementById('link-login-account').addEventListener('click', (e) => {
+        e.preventDefault();
+        switchScreen('login');
+    });
+
+    const validateEmailFormat = (email) => {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    };
+
+    const handleEmailInput = (e) => {
+        const val = e.target.value.trim();
+        if (val !== '' && !validateEmailFormat(val)) {
+            e.target.style.borderColor = '#ef4444';
+            e.target.style.outlineColor = '#ef4444';
+        } else {
+            e.target.style.borderColor = '';
+            e.target.style.outlineColor = '';
+        }
+    };
+
+    document.getElementById('login-email').addEventListener('input', handleEmailInput);
+    document.getElementById('reg-email').addEventListener('input', handleEmailInput);
 
     document.getElementById('login-btn').addEventListener('click', () => {
         const email = document.getElementById('login-email').value.trim();
@@ -67,6 +75,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!email || !password) {
             alert('Please enter both email and password.');
+            return;
+        }
+
+        if (!validateEmailFormat(email)) {
+            alert('Please enter a valid email address.');
             return;
         }
 
@@ -117,6 +130,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!name || !email || !password) {
             alert('Please fill in all fields to register.');
+            return;
+        }
+
+        if (!validateEmailFormat(email)) {
+            alert('Please enter a valid email address.');
             return;
         }
 
@@ -206,6 +224,13 @@ document.addEventListener('DOMContentLoaded', () => {
         switchScreen('wizard');
     });
 
+    document.getElementById('signout-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('login-email').value = '';
+        document.getElementById('login-password').value = '';
+        switchScreen('landing');
+    });
+
     // Logic: Process user inputs and navigate to results
     document.getElementById('find-courses-btn').addEventListener('click', () => {
         // 1. Gather constraints
@@ -270,7 +295,7 @@ function switchScreen(screenId) {
 
     const navbar = document.querySelector('.navbar');
     if (navbar) {
-        if (screenId === 'landing') {
+        if (screenId === 'landing' || screenId === 'login' || screenId === 'register') {
             navbar.style.display = 'none';
         } else {
             navbar.style.display = 'flex';
@@ -370,7 +395,7 @@ function renderCourses(courses) {
 
     Object.values(groupedCourses).forEach((courseGroup, index) => {
         const isTopMatch = index < 3;
-        const color = courseGroup.bestMatchPercentage >= 80 ? '#22c55e' : (courseGroup.bestMatchPercentage >= 60 ? '#eab308' : '#ef4444');
+        const color = courseGroup.bestMatchPercentage >= 80 ? '#22c55e' : (courseGroup.bestMatchPercentage >= 60 ? '#3b82f6' : '#ef4444');
 
         const card = document.createElement('div');
         card.className = 'course-card' + (isTopMatch ? ' top-match' : '');

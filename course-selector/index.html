@@ -17,6 +17,7 @@
                 <a href="#" class="nav-link" data-target="landing">Home</a>
                 <a href="#" class="nav-link" data-target="explore">Explore</a>
                 <a href="#" class="nav-link" data-target="wizard">Edit Preferences</a>
+                <a href="#" id="signout-btn" class="nav-link" style="color: #ef4444;">Sign Out</a>
             </div>
         </nav>
 
@@ -35,18 +36,12 @@
             </div>
         </section>
 
-        <!-- Auth Section -->
-        <section id="auth" class="screen" style="padding-top: 100px;">
+        <!-- Login Section -->
+        <section id="login" class="screen" style="padding-top: 100px;">
+            <div class="top-right-controls">
+                <button id="login-back-btn" class="secondary-btn" style="padding: 0.5rem 1rem;">&larr; Back</button>
+            </div>
             <div class="wizard-container glass-panel">
-                <div class="auth-tabs"
-                    style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">
-                    <button id="tab-login" class="auth-tab active"
-                        style="flex: 1; background: transparent; border: none; color: var(--text-primary); font-size: 1.2rem; cursor: pointer; border-bottom: 2px solid var(--primary-color);">Login</button>
-                    <button id="tab-register" class="auth-tab"
-                        style="flex: 1; background: transparent; border: none; color: var(--text-secondary); font-size: 1.2rem; cursor: pointer;">Register</button>
-                </div>
-
-                <!-- Login Form -->
                 <div id="form-login" class="auth-form active">
                     <div style="text-align: center; margin-bottom: 2rem;">
                         <h2>Welcome Back</h2>
@@ -71,9 +66,16 @@
                             style="color: var(--primary-color); text-decoration: none;">Create one</a>
                     </p>
                 </div>
+            </div>
+        </section>
 
-                <!-- Register Form -->
-                <div id="form-register" class="auth-form" style="display: none;">
+        <!-- Register Section -->
+        <section id="register" class="screen" style="padding-top: 100px;">
+            <div class="top-right-controls">
+                <button id="register-back-btn" class="secondary-btn" style="padding: 0.5rem 1rem;">&larr; Back</button>
+            </div>
+            <div class="wizard-container glass-panel">
+                <div id="form-register" class="auth-form active">
                     <div style="text-align: center; margin-bottom: 2rem;">
                         <h2>Create an Account</h2>
                         <p style="color: var(--text-secondary); margin-top: 0.5rem;">Register to get personalized course
@@ -97,6 +99,10 @@
 
                     <button id="register-btn" class="primary-btn" style="width: 100%; margin-top: 1rem;">Register &
                         Continue</button>
+                    <p style="text-align: center; margin-top: 1rem; color: var(--text-secondary);">
+                        Already have an account? <a href="#" id="link-login-account"
+                            style="color: var(--primary-color); text-decoration: none;">Login instead</a>
+                    </p>
                 </div>
             </div>
         </section>
@@ -262,7 +268,7 @@
                 <div style="display: flex; align-items: center; gap: 1rem; flex: 1; min-width: 250px;">
                     <label for="explore-location" style="font-weight: bold; white-space: nowrap;">State:</label>
                     <select id="explore-location"
-                        style="flex: 1; padding: 0.8rem; border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.3); background: rgba(15, 23, 42, 0.6); color: var(--text-primary); outline: none;">
+                        style="flex: 1; padding: 0.8rem; border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.3); background: #1e293b; color: var(--text-primary); outline: none;">
                         <option value="Any">All India</option>
                         <option value="Andhra Pradesh">Andhra Pradesh</option>
                         <option value="Arunachal Pradesh">Arunachal Pradesh</option>
@@ -299,7 +305,7 @@
                     <label for="explore-category" style="font-weight: bold; white-space: nowrap;">Area of
                         Interest:</label>
                     <select id="explore-category"
-                        style="flex: 1; padding: 0.8rem; border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.3); background: rgba(15, 23, 42, 0.6); color: var(--text-primary); outline: none;">
+                        style="flex: 1; padding: 0.8rem; border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.3); background: #1e293b; color: var(--text-primary); outline: none;">
                         <option value="Any">All Areas</option>
                         <option value="Engineering">Tech & Engineering</option>
                         <option value="Medical">Medical & Health</option>
@@ -318,6 +324,7 @@
 
     <script src="courses.js"></script>
     <script src="app.js"></script>
+    <script src="background.js"></script>
 </body>
 
 </html>
