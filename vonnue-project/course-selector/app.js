@@ -27,6 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
         explore: document.getElementById('explore')
     };
 
+    updateAuthUI();
+
     // Event Listeners for Navigation
     document.getElementById('start-btn').addEventListener('click', () => {
         switchScreen('login');
@@ -69,57 +71,71 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('reg-email').addEventListener('input', handleEmailInput);
 
     document.getElementById('login-btn').addEventListener('click', () => {
-        const email = document.getElementById('login-email').value.trim();
-        const password = document.getElementById('login-password').value;
-        const users = JSON.parse(localStorage.getItem('users')) || [];
+        try {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            const users = JSON.parse(localStorage.getItem('users')) || [];
 
-        if (!email || !password) {
-            alert('Please enter both email and password.');
-            return;
-        }
-
-        if (!validateEmailFormat(email)) {
-            alert('Please enter a valid email address.');
-            return;
-        }
-
-        const user = users.find(u => u.email === email);
-
-        if (user) {
-            if (user.password === password) {
-                const name = user.name;
-                document.getElementById('user-greeting').textContent = `Top Matches`;
-
-                // Load saved preferences if available
-                if (user.preferences) {
-                    userPreferences = user.preferences;
-
-                    // Pre-fill form inputs with loaded preferences
-                    document.getElementById('max-budget').value = userPreferences.budget !== 99999999 ? userPreferences.budget : '';
-                    document.getElementById('min-gpa').value = userPreferences.gpa !== 0 ? userPreferences.gpa : '';
-                    document.getElementById('study-format').value = userPreferences.format;
-                    document.getElementById('hs-stream').value = userPreferences.hsStream;
-                    document.getElementById('pref-category').value = userPreferences.prefCategory;
-                    document.getElementById('pref-location').value = userPreferences.prefLocation;
-                    document.getElementById('pref-duration').value = userPreferences.prefDuration;
-
-                    document.getElementById('pref-ranking').value = userPreferences.weights.ranking;
-                    document.getElementById('pref-outcomes').value = userPreferences.weights.outcomes;
-                    document.getElementById('pref-cost').value = userPreferences.weights.cost;
-
-                    document.getElementById('val-ranking').textContent = userPreferences.weights.ranking;
-                    document.getElementById('val-outcomes').textContent = userPreferences.weights.outcomes;
-                    document.getElementById('val-cost').textContent = userPreferences.weights.cost;
-                }
-
-                const recommendedCourses = evaluateCourses();
-                renderCourses(recommendedCourses);
-                switchScreen('results');
-            } else {
-                alert('Incorrect password.');
+            if (!email || !password) {
+                alert('Please enter both email and password.');
+                return;
             }
-        } else {
-            alert('Invalid email. Please try again or register.');
+
+            if (!validateEmailFormat(email)) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+
+            const user = users.find(u => u.email === email);
+
+            if (user) {
+                if (user.password === password) {
+                    sessionStorage.setItem('currentUser', email);
+                    updateAuthUI();
+                    const name = user.name;
+                    document.getElementById('user-greeting').textContent = `Top Matches`;
+
+                    // Load saved preferences if available
+                    if (user.preferences) {
+                        userPreferences = {
+                            ...userPreferences,
+                            ...user.preferences,
+                            weights: {
+                                ...userPreferences.weights,
+                                ...(user.preferences.weights || {})
+                            }
+                        };
+
+                        // Pre-fill form inputs with loaded preferences
+                        document.getElementById('max-budget').value = userPreferences.budget !== 99999999 ? userPreferences.budget : '';
+                        document.getElementById('min-gpa').value = userPreferences.gpa !== 0 ? userPreferences.gpa : '';
+                        document.getElementById('study-format').value = userPreferences.format;
+                        document.getElementById('hs-stream').value = userPreferences.hsStream;
+                        document.getElementById('pref-category').value = userPreferences.prefCategory;
+                        document.getElementById('pref-location').value = userPreferences.prefLocation;
+                        document.getElementById('pref-duration').value = userPreferences.prefDuration;
+
+                        document.getElementById('pref-ranking').value = userPreferences.weights.ranking;
+                        document.getElementById('pref-outcomes').value = userPreferences.weights.outcomes;
+                        document.getElementById('pref-cost').value = userPreferences.weights.cost;
+
+                        document.getElementById('val-ranking').textContent = userPreferences.weights.ranking;
+                        document.getElementById('val-outcomes').textContent = userPreferences.weights.outcomes;
+                        document.getElementById('val-cost').textContent = userPreferences.weights.cost;
+                    }
+
+                    const recommendedCourses = evaluateCourses();
+                    renderCourses(recommendedCourses);
+                    switchScreen('results');
+                } else {
+                    alert('Incorrect password.');
+                }
+            } else {
+                alert('Invalid email. Please try again or register.');
+            }
+        } catch (err) {
+            console.error(err);
+            alert('An unexpected error occurred during login: ' + err.message + '\n' + err.stack);
         }
     });
 
@@ -155,16 +171,11 @@ document.addEventListener('DOMContentLoaded', () => {
         users.push(newUser);
         localStorage.setItem('users', JSON.stringify(users));
 
+        sessionStorage.setItem('currentUser', email);
+        updateAuthUI();
         document.getElementById('user-greeting').textContent = `Top Matches`;
 
         switchScreen('wizard');
-    });
-
-    document.getElementById('explore-btn').addEventListener('click', () => {
-        switchScreen('explore');
-        const locationFilter = document.getElementById('explore-location').value;
-        const categoryFilter = document.getElementById('explore-category').value;
-        renderExploreColleges(locationFilter, categoryFilter); // Initial render
     });
 
     document.querySelectorAll('.nav-link').forEach(link => {
@@ -172,7 +183,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const target = e.target.getAttribute('data-target');
             if (target) {
                 e.preventDefault();
+
+                if (target === 'results') {
+                    // Prevent empty results if they haven't run the wizard yet this session
+                    const recommendedCourses = evaluateCourses();
+                    renderCourses(recommendedCourses);
+                }
+
                 switchScreen(target);
+
+                if (target === 'explore') {
+                    const categoryFilter = document.getElementById('explore-category').value;
+                    renderExploreCourses(categoryFilter);
+                }
             }
         });
     });
@@ -183,16 +206,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    document.getElementById('explore-location').addEventListener('change', () => {
-        const locationFilter = document.getElementById('explore-location').value;
-        const categoryFilter = document.getElementById('explore-category').value;
-        renderExploreColleges(locationFilter, categoryFilter);
-    });
-
     document.getElementById('explore-category').addEventListener('change', () => {
-        const locationFilter = document.getElementById('explore-location').value;
         const categoryFilter = document.getElementById('explore-category').value;
-        renderExploreColleges(locationFilter, categoryFilter);
+        renderExploreCourses(categoryFilter);
     });
 
     document.querySelectorAll('.next-btn, .prev-btn').forEach(btn => {
@@ -228,6 +244,8 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         document.getElementById('login-email').value = '';
         document.getElementById('login-password').value = '';
+        sessionStorage.removeItem('currentUser');
+        updateAuthUI();
         switchScreen('landing');
     });
 
@@ -257,7 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Save updated preferences to the logged-in user if available (assuming email is known or matching the active session)
         // For a more robust approach, we need the active user's email.
-        const currentEmail = document.getElementById('login-email').value.trim() || document.getElementById('reg-email').value.trim();
+        const currentEmail = sessionStorage.getItem('currentUser') || document.getElementById('login-email').value.trim() || document.getElementById('reg-email').value.trim();
         if (currentEmail) {
             const users = JSON.parse(localStorage.getItem('users')) || [];
             const userIndex = users.findIndex(u => u.email === currentEmail);
@@ -280,7 +298,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const section = urlParams.get('section');
     if (section && screens[section]) {
         switchScreen(section);
-        window.history.replaceState({}, document.title, window.location.pathname);
+        if (section === 'explore') {
+            const categoryFilter = document.getElementById('explore-category').value;
+            renderExploreCourses(categoryFilter);
+        }
     } else {
         switchScreen('landing');
     }
@@ -293,6 +314,13 @@ function switchScreen(screenId) {
     });
     screens[screenId].classList.add('active');
 
+    // Make sure the URL tracks the current section so the browser Back button works correctly
+    if (window.location.pathname.endsWith('index.html') || window.location.pathname.endsWith('/')) {
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.set('section', screenId);
+        window.history.replaceState({ section: screenId }, '', newUrl);
+    }
+
     const navbar = document.querySelector('.navbar');
     if (navbar) {
         if (screenId === 'landing' || screenId === 'login' || screenId === 'register') {
@@ -302,6 +330,8 @@ function switchScreen(screenId) {
         }
     }
 }
+
+
 
 
 // Decision Engine
@@ -444,21 +474,12 @@ window.toggleColleges = function (containerId, btnElement) {
 
 // --- Explore Logic ---
 // --- Explore Logic ---
-function renderExploreColleges(locationFilter = 'Any', categoryFilter = 'Any') {
+function renderExploreCourses(categoryFilter = 'Any') {
     let filteredCourses = coursesData;
 
-    // Filter by location
-    if (locationFilter !== 'Any') {
-        filteredCourses = filteredCourses.filter(c => c.location === locationFilter);
-    }
-
-    // Filter by category
     if (categoryFilter !== 'Any') {
         filteredCourses = filteredCourses.filter(c => c.category === categoryFilter);
     }
-
-    // Sort by NIRF ranking (Ascending: 1 is best)
-    filteredCourses.sort((a, b) => a.ranking - b.ranking);
 
     const grid = document.getElementById('explore-grid');
     grid.innerHTML = '';
@@ -466,33 +487,32 @@ function renderExploreColleges(locationFilter = 'Any', categoryFilter = 'Any') {
     if (filteredCourses.length === 0) {
         grid.innerHTML = `
             <div class="glass-panel" style="grid-column: 1 / -1; text-align: center;">
-                <h3>No colleges found in this state.</h3>
-                <p>Try selecting a different location.</p>
+                <h3>No courses found for this category.</h3>
+                <p>Try clearing your filters.</p>
             </div>
         `;
         return;
     }
 
     filteredCourses.forEach(course => {
-        const totalCost = course.tuition_fees + course.cost_of_living;
-
         const card = document.createElement('div');
         card.className = 'course-card';
-        card.style.cursor = 'pointer';
-        card.onclick = () => window.location.href = `details.html?id=${course.id}`;
         card.innerHTML = `
             <h3>${course.name}</h3>
-            <h4>${course.university} • ${course.country}</h4>
-            
-            <div class="course-tags" style="margin-top: 1rem;">
-                <span class="tag">🏆 Rank #${course.ranking}</span>
-                <span class="tag">📊 Employability: ${course.employability_rate}%</span>
+            <h4 style="color: var(--text-secondary); margin-bottom: 0.5rem; font-size: 0.95rem;">${course.university}</h4>
+            <div style="margin-bottom: 1rem;">
+                <span class="badge" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">${course.category}</span>
             </div>
             
-            <div class="course-tags">
-                <span class="tag">⏱️ ${course.duration_months} Months</span>
+            <div class="course-tags" style="margin-top: auto; margin-bottom: 1rem; flex-wrap: wrap;">
                 <span class="tag">📍 ${course.location}</span>
-                <span class="tag">💰 ₹${totalCost.toLocaleString('en-IN')}</span>
+                <span class="tag">⏱️ ${course.duration_months} Months</span>
+                <span class="tag">📖 ${course.format}</span>
+                <span class="tag">💰 ₹${course.tuition_fees.toLocaleString('en-IN')}</span>
+            </div>
+            
+            <div style="margin-top: 1rem;">
+                <button class="primary-btn" style="width: 100%; padding: 10px; border-radius: 8px;" onclick="window.location.href='details.html?id=${course.id}'">View College Details</button>
             </div>
         `;
         grid.appendChild(card);

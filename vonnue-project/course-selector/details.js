@@ -1,4 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
+    updateAuthUI();
+
+    const currentUser = sessionStorage.getItem('currentUser');
+    const signoutBtn = document.getElementById('signout-btn');
+    if (signoutBtn) {
+        signoutBtn.style.display = currentUser ? '' : 'none';
+        signoutBtn.addEventListener('click', () => {
+            sessionStorage.removeItem('currentUser');
+        });
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
     const courseName = urlParams.get('course');
     const collegeId = urlParams.get('id'); // Fallback if still using college-specific view from other places
@@ -11,6 +22,12 @@ document.addEventListener('DOMContentLoaded', () => {
             container.innerHTML = `<h3>College course not found.</h3>`;
             return;
         }
+
+        const pageTitle = document.getElementById('page-title');
+        if (pageTitle) {
+            pageTitle.textContent = 'College Details';
+        }
+
         renderSingleCollege(course, container);
     } else if (courseName) {
         // Render course group logic
@@ -70,6 +87,20 @@ function renderCourseDetails(courseGroup, container) {
     // Check if we need "Online" as a location option based on matches
     const hasOnline = sortedColleges.some(c => c.location === "Online");
 
+    // Aggregate stats
+    const totalTuition = sortedColleges.reduce((sum, c) => sum + c.tuition_fees, 0);
+    const avgTuition = Math.round(totalTuition / sortedColleges.length);
+
+    const totalSalary = sortedColleges.reduce((sum, c) => sum + c.avg_starting_salary, 0);
+    const avgSalary = Math.round(totalSalary / sortedColleges.length);
+
+    const totalEmployability = sortedColleges.reduce((sum, c) => sum + c.employability_rate, 0);
+    const avgEmployability = Math.round(totalEmployability / sortedColleges.length);
+
+    const uniqueFormats = [...new Set(sortedColleges.map(c => c.format))].join(', ');
+
+
+
     container.innerHTML = `
         <h1 style="color: var(--accent-color); margin-bottom: 0.5rem; font-size: 2.5rem; text-align: center;">${courseGroup.name}</h1>
         <h3 style="color: var(--text-secondary); margin-bottom: 2.5rem; font-size: 1.2rem; text-align: center;">Category: ${courseGroup.category}</h3>
@@ -88,6 +119,22 @@ function renderCourseDetails(courseGroup, container) {
                         <p style="color: var(--text-secondary); margin-bottom: 0.3rem;">Total Matches Found</p>
                         <p style="font-size: 1.5rem; font-weight: 600;" id="colleges-count">${courseGroup.colleges.length} Colleges</p>
                     </div>
+                    <div>
+                        <p style="color: var(--text-secondary); margin-bottom: 0.3rem;">Study Formats</p>
+                        <p style="font-size: 1.5rem; font-weight: 600;">${uniqueFormats}</p>
+                    </div>
+                    <div>
+                        <p style="color: var(--text-secondary); margin-bottom: 0.3rem;">Avg Tuition Fees</p>
+                        <p style="font-size: 1.5rem; font-weight: 600;">₹${avgTuition.toLocaleString('en-IN')}</p>
+                    </div>
+                    <div>
+                        <p style="color: var(--text-secondary); margin-bottom: 0.3rem;">Avg Starting Salary</p>
+                        <p style="font-size: 1.5rem; font-weight: 600;">₹${avgSalary.toLocaleString('en-IN')}</p>
+                    </div>
+                    <div>
+                        <p style="color: var(--text-secondary); margin-bottom: 0.3rem;">Avg Employability</p>
+                        <p style="font-size: 1.5rem; font-weight: 600;">${avgEmployability}%</p>
+                    </div>
                 </div>
 
                 <div style="margin-top: 2rem;">
@@ -99,22 +146,28 @@ function renderCourseDetails(courseGroup, container) {
             </div>
         </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 0.5rem; margin-bottom: 1.5rem;">
-            <h3 style="color: var(--text-primary); font-size: 1.5rem;">Colleges Offering This Course</h3>
-            <div>
-                <label for="location-filter" style="color: var(--text-secondary); margin-right: 0.5rem; font-size: 0.9rem;">Filter Location:</label>
-                <select id="location-filter" style="background: #1e293b; color: var(--text-primary); border: 1px solid rgba(59, 130, 246, 0.3); padding: 0.5rem; border-radius: 8px; outline: none;">
-                    <option value="Any">All Locations</option>
-                    ${hasOnline ? `<option value="Online">Online</option>` : ''}
-                    ${keralaDistricts.map(dist => `<option value="${dist}">${dist}</option>`).join('')}
-                </select>
-            </div>
+        <div id="show-colleges-btn-container" style="text-align: center; margin-bottom: 2rem; margin-top: 2rem;">
+            <button id="show-colleges-btn" class="primary-btn">Show list of colleges</button>
         </div>
-        
-        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Click on any college below to view its specific admission and financial details.</p>
-        
-        <div class="colleges-list" id="colleges-list-container">
-            <!-- Rendered via JS based on filter -->
+
+        <div id="colleges-section" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 0.5rem; margin-bottom: 1.5rem;">
+                <h3 style="color: var(--text-primary); font-size: 1.5rem;">Colleges Offering This Course</h3>
+                <div>
+                    <label for="location-filter" style="color: var(--text-secondary); margin-right: 0.5rem; font-size: 0.9rem;">Filter Location:</label>
+                    <select id="location-filter" style="background: #1e293b; color: var(--text-primary); border: 1px solid rgba(59, 130, 246, 0.3); padding: 0.5rem; border-radius: 8px; outline: none;">
+                        <option value="Any">All Locations</option>
+                        ${hasOnline ? `<option value="Online">Online</option>` : ''}
+                        ${keralaDistricts.map(dist => `<option value="${dist}">${dist}</option>`).join('')}
+                    </select>
+                </div>
+            </div>
+            
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">Click on any college below to view its specific admission and financial details.</p>
+            
+            <div class="colleges-list" id="colleges-list-container">
+                <!-- Rendered via JS based on filter -->
+            </div>
         </div>
     `;
 
@@ -179,6 +232,15 @@ function renderCourseDetails(courseGroup, container) {
     // Attach event listener to filter
     document.getElementById('location-filter').addEventListener('change', (e) => {
         renderCollegesList(e.target.value);
+    });
+
+    // Attach event listener to show colleges button
+    document.getElementById('show-colleges-btn').addEventListener('click', () => {
+        document.getElementById('colleges-section').style.display = 'block';
+        document.getElementById('show-colleges-btn-container').style.display = 'none';
+
+        // Ensure the list renders just in time
+        renderCollegesList(document.getElementById('location-filter').value);
     });
 }
 

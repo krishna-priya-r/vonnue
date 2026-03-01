@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Syllabus</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 50px;
+        }
+
+        .syllabus-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .year-block {
+            margin-bottom: 2rem;
+        }
+
+        .year-title {
+            color: #60a5fa;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .subject-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .subject-list li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .subject-list li::before {
+            content: "•";
+            color: var(--accent-color);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="syllabus-container glass-panel">
+        <h1 id="course-title" style="text-align: center; color: var(--accent-color); margin-bottom: 0.5rem;">Syllabus
+        </h1>
+        <h3 id="course-category" style="text-align: center; color: var(--text-secondary); margin-bottom: 3rem;"></h3>
+
+        <div id="syllabus-content">
+            <!-- Dynamically injected -->
+        </div>
+
+        <div style="text-align: center; margin-top: 3rem;">
+            <button onclick="window.close()" class="secondary-btn">Close Window</button>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const courseName = urlParams.get('course') || 'Unknown Course';
+        const category = urlParams.get('category') || 'General';
+
+        document.getElementById('course-title').textContent = `${courseName} - Official Syllabus`;
+        document.getElementById('course-category').textContent = `Category: ${category}`;
+
+        const subjectsByCategory = {
+            'Medical': [
+                ['Human Anatomy I', 'Physiology I', 'Biochemistry'],
+                ['Pharmacology', 'Pathology I', 'Microbiology'],
+                ['Clinical Rotations', 'Surgery I', 'Internal Medicine'],
+                ['Pediatrics', 'Obstetrics & Gynecology', 'Advanced Clinicals']
+            ],
+            'Engineering': [
+                ['Engineering Physics', 'Calculus I', 'Intro to Programming'],
+                ['Data Structures', 'Circuit Theory', 'Calculus II'],
+                ['Operating Systems', 'Database Management', 'Computer Networks'],
+                ['Software Engineering', 'Machine Learning', 'Final Year Project']
+            ],
+            'Business': [
+                ['Financial Accounting', 'Principles of Management', 'Microeconomics'],
+                ['Marketing Management', 'Business Analytics', 'Macroeconomics'],
+                ['Corporate Finance', 'Human Resource Management', 'Operations'],
+                ['Strategic Management', 'Global Business', 'Business Strategy Simulation']
+            ],
+            'Science': [
+                ['Core Sciences I', 'Applied Mathematics', 'Laboratory Practices'],
+                ['Core Sciences II', 'Statistical Methods', 'Advanced Lab'],
+                ['Research Methodology', 'Data Science', 'Specialized Theory'],
+                ['Independent Capstone Research', 'Thesis Writing', 'Seminar']
+            ],
+            'Arts': [
+                ['Intro to Humanities', 'World History', 'Communication Skills'],
+                ['Sociology', 'Creative Writing', 'Political Science'],
+                ['Critical Theory', 'Media Studies', 'Ethics & Philosophy'],
+                ['Senior Seminar', 'Dissertation', 'Applied Arts Project']
+            ]
+        };
+
+        const generateContent = () => {
+            const subjects = subjectsByCategory[category] || subjectsByCategory['Arts'];
+            let html = '';
+            subjects.forEach((year, index) => {
+                html += `
+                    <div class="year-block">
+                        <h3 class="year-title">Year ${index + 1}</h3>
+                        <ul class="subject-list">
+                            ${year.map(s => `<li>${s}</li>`).join('')}
+                        </ul>
+                    </div>
+                 `;
+            });
+            return html;
+        };
+
+        document.getElementById('syllabus-content').innerHTML = generateContent();
+    </script>
+</body>
+
+</html>

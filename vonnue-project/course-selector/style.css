@@ -533,3 +533,24 @@ input[type=range]::-webkit-slider-runnable-track {
     font-size: 0.9rem;
     color: var(--text-secondary);
 }
+
+.profile-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: var(--accent-gradient);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+    margin-left: -15px;
+    cursor: default;
+}
+
+.hidden {
+    display: none !important;
+}

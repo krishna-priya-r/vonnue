@@ -15,9 +15,11 @@
             <div class="nav-logo">Course Finder</div>
             <div class="nav-links">
                 <a href="#" class="nav-link" data-target="landing">Home</a>
-                <a href="#" class="nav-link" data-target="explore">Explore</a>
+                <a href="#" class="nav-link" data-target="explore">Explore Courses</a>
+                <a href="#" class="nav-link" data-target="results" id="nav-top-matches">Top Matches</a>
                 <a href="#" class="nav-link" data-target="wizard">Edit Preferences</a>
                 <a href="#" id="signout-btn" class="nav-link" style="color: #ef4444;">Sign Out</a>
+                <div id="user-profile-icon" class="profile-icon hidden"></div>
             </div>
         </nav>
 
@@ -30,7 +32,6 @@
                     </p>
                     <div class="hero-buttons">
                         <button id="start-btn" class="primary-btn">Login</button>
-                        <button id="explore-btn" class="secondary-btn">Explore Colleges</button>
                     </div>
                 </div>
             </div>
@@ -257,7 +258,7 @@
         <section id="explore" class="screen" style="padding-top: 100px;">
             <div class="results-header">
                 <div>
-                    <h2>Explore All Colleges</h2>
+                    <h2>Explore All Courses</h2>
                     <p style="color: var(--text-secondary); margin-top: 0.5rem; font-size: 0.95rem;">Ranked by NIRF &
                         Employability outcomes.</p>
                 </div>
@@ -265,40 +266,12 @@
 
             <div class="filter-bar glass-panel"
                 style="margin-bottom: 2rem; max-width: 1200px; padding: 1.5rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-                <div style="display: flex; align-items: center; gap: 1rem; flex: 1; min-width: 250px;">
+                <div style="display: none; align-items: center; gap: 1rem; flex: 1; min-width: 250px;">
                     <label for="explore-location" style="font-weight: bold; white-space: nowrap;">State:</label>
                     <select id="explore-location"
                         style="flex: 1; padding: 0.8rem; border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.3); background: #1e293b; color: var(--text-primary); outline: none;">
                         <option value="Any">All India</option>
-                        <option value="Andhra Pradesh">Andhra Pradesh</option>
-                        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-                        <option value="Assam">Assam</option>
-                        <option value="Bihar">Bihar</option>
-                        <option value="Chhattisgarh">Chhattisgarh</option>
-                        <option value="Goa">Goa</option>
-                        <option value="Gujarat">Gujarat</option>
-                        <option value="Haryana">Haryana</option>
-                        <option value="Himachal Pradesh">Himachal Pradesh</option>
-                        <option value="Jharkhand">Jharkhand</option>
-                        <option value="Karnataka">Karnataka</option>
                         <option value="Kerala">Kerala</option>
-                        <option value="Madhya Pradesh">Madhya Pradesh</option>
-                        <option value="Maharashtra">Maharashtra</option>
-                        <option value="Manipur">Manipur</option>
-                        <option value="Meghalaya">Meghalaya</option>
-                        <option value="Mizoram">Mizoram</option>
-                        <option value="Nagaland">Nagaland</option>
-                        <option value="Odisha">Odisha</option>
-                        <option value="Punjab">Punjab</option>
-                        <option value="Rajasthan">Rajasthan</option>
-                        <option value="Sikkim">Sikkim</option>
-                        <option value="Tamil Nadu">Tamil Nadu</option>
-                        <option value="Telangana">Telangana</option>
-                        <option value="Tripura">Tripura</option>
-                        <option value="Uttar Pradesh">Uttar Pradesh</option>
-                        <option value="Uttarakhand">Uttarakhand</option>
-                        <option value="West Bengal">West Bengal</option>
-                        <option value="Online">Online / Remote</option>
                     </select>
                 </div>
                 <div style="display: flex; align-items: center; gap: 1rem; flex: 1; min-width: 250px;">
@@ -323,6 +296,7 @@
     </div>
 
     <script src="courses.js"></script>
+    <script src="auth.js"></script>
     <script src="app.js"></script>
     <script src="background.js"></script>
 </body>
