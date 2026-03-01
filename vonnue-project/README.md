@@ -42,4 +42,10 @@ The application follows a standard, lightweight **HTML/CSS/Vanilla JS** architec
 
 ## What you would improve with more time
 
-(To be updated as the project evolves)
+- **Backend Integration**: Move from a client-side architecture to a proper backend system (e.g., Node.js or Python) with a real database (like PostgreSQL or MongoDB) to support massive datasets without overwhelming the browser's memory.
+- **Accurate Syllabus Integration**: Partner with actual universities or use reliable APIs to fetch and display official, up-to-date syllabi instead of relying on generic search links.
+- **Advanced Authentication**: Implement OAuth (Google, GitHub login) and robust JWT-based session management instead of relying on basic local storage.
+- **User Profiles & Saved Results**: Allow users to save their favorite courses, compare them side-by-side in a dedicated dashboard, and track their application progress.
+- **Enhanced MCDA Engine**: Introduce more granular weights, perhaps allowing users to define custom criteria. Also, provide visual charts (like radar charts) on the details page to clearly show how a course scores across different metrics.
+- **Framework Migration**: Migrate the vanilla JavaScript codebase to a modern framework like React or Vue.js for better component reusability, state management, and easier scaling in the future.
+- **Accessibility (a11y)**: Conduct a thorough accessibility audit and implement ARIA labels, keyboard navigation improvements, and screen-reader-friendly dynamic updates to ensure the application is usable by everyone.
