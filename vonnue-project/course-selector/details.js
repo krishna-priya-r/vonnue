@@ -247,6 +247,9 @@ function renderCourseDetails(courseGroup, container) {
 function renderSingleCollege(course, container) {
     const totalCost = course.tuition_fees + course.cost_of_living;
 
+    // Find all courses offered by this specific college (university)
+    const otherCourses = coursesData.filter(c => c.university === course.university && c.id !== course.id);
+
     container.innerHTML = `
         <h1 style="color: var(--accent-color); margin-bottom: 0.5rem; font-size: 2.5rem; text-align: center;">${course.university}</h1>
         <h3 style="color: var(--text-secondary); margin-bottom: 2.5rem; font-size: 1.2rem; text-align: center;">${course.name} • ${course.location}, ${course.country}</h3>
@@ -323,6 +326,26 @@ function renderSingleCollege(course, container) {
                     </div>
                 </div>
             </div>
+
+            <!-- Other Courses Available Here -->
+            ${otherCourses.length > 0 ? `
+            <div style="grid-column: 1 / -1; background: rgba(15, 23, 42, 0.4); padding: 2rem; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); margin-top: 1rem;">
+                <h4 style="margin-bottom: 1.5rem; color: #a78bfa; font-size: 1.3rem; border-bottom: 1px solid rgba(167, 139, 250, 0.3); padding-bottom: 0.5rem;">All Courses Offered Here</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+                    ${otherCourses.map(c => `
+                        <div style="background: rgba(0, 0, 0, 0.2); padding: 1.2rem; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';" onclick="window.location.href='details.html?id=${c.id}'">
+                            <h5 style="color: #60a5fa; margin-bottom: 0.4rem; font-size: 1.1rem;">${c.name}</h5>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.8rem;">${c.category} • ${c.duration_months} Months</p>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 0.8rem;">
+                                <span>Fees: ₹${c.tuition_fees.toLocaleString('en-IN')}</span>
+                                <span style="color: #3fb950; font-weight: 600;">Emp: ${c.employability_rate}%</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            ` : ''}
+
         </div>
         
         <div style="text-align: center; margin-top: 1rem; margin-bottom: 2rem;">

@@ -34,6 +34,10 @@ document.addEventListener('DOMContentLoaded', () => {
         switchScreen('login');
     });
 
+    document.getElementById('start-register-btn').addEventListener('click', () => {
+        switchScreen('register');
+    });
+
     document.getElementById('login-back-btn').addEventListener('click', () => {
         switchScreen('landing');
     });
@@ -122,9 +126,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         document.getElementById('val-ranking').textContent = userPreferences.weights.ranking;
                         document.getElementById('val-outcomes').textContent = userPreferences.weights.outcomes;
                         document.getElementById('val-cost').textContent = userPreferences.weights.cost;
+                    } // This closes the if(user.preferences) block
+
+                    if (user.preferences && user.preferences.prefCategory !== 'Any') {
+                        document.getElementById('user-greeting').textContent = `Top Matches for ${user.preferences.prefCategory}`;
+                    } else {
+                        document.getElementById('user-greeting').textContent = `Top Matches`;
                     }
 
-                    const recommendedCourses = evaluateCourses();
+                    const recommendedCourses = evaluateCourses(true); // Pass true to only filter by category
                     renderCourses(recommendedCourses);
                     switchScreen('results');
                 } else {
@@ -186,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (target === 'results') {
                     // Prevent empty results if they haven't run the wizard yet this session
-                    const recommendedCourses = evaluateCourses();
+                    const recommendedCourses = evaluateCourses(true); // Pass true to only filter by category
                     renderCourses(recommendedCourses);
                 }
 
@@ -286,7 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // 3. Calculate Results
-        const recommendedCourses = evaluateCourses();
+        const recommendedCourses = evaluateCourses(true); // Pass true to only filter by category
 
         // 4. Render Results
         renderCourses(recommendedCourses);
@@ -335,8 +345,16 @@ function switchScreen(screenId) {
 
 
 // Decision Engine
-function evaluateCourses() {
+function evaluateCourses(categoryOnly = false) {
     const filtered = coursesData.filter(course => {
+        if (categoryOnly) {
+            // Only filter by category if it's not 'Any'
+            if (userPreferences.prefCategory !== 'Any' && course.category !== userPreferences.prefCategory) {
+                return false;
+            }
+            return true;
+        }
+
         const totalCost = course.tuition_fees + course.cost_of_living;
 
         // Hard Constraint Checks
